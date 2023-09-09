@@ -1,24 +1,34 @@
-from datetime import datetime
-import json
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-
+import requests
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as login_user
+from django.contrib.auth import logout as logout_user
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, logout as logout_user, login as login_user
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 
 
 # @login_required(login_url="login/")
 def index(req) -> HttpResponse:
     if req.user.is_authenticated:
-        user = req.user
-        return render(
-            req,
-            "index.html",
-            {
-                "is_authenticated": True,
-            },
-        )
+        if req.method == "POST":
+            query = req.POST["query"]
+            res = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={query}")
+            data = res.json()
+            return render(
+                req,
+                "index.html",
+                {"is_authenticated": True, "books": data["items"]},
+            )
+        else:
+            user = req.user
+            return render(
+                req,
+                "index.html",
+                {
+                    "is_authenticated": True,
+                },
+            )
+
     else:
         return render(req, "login.html", {"is_authenticated": False})
 
