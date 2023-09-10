@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
-from books.helpers import search_books
+from books.helpers import search_book, search_books
 from books.models import Bookmark, History
 
 # @login_required(login_url="login/")
@@ -111,7 +111,14 @@ def bookmark(req: HttpRequest, book_id) -> HttpResponse:
 @login_required(login_url="login/")
 def details(req, book_id) -> HttpResponse:
     user = req.user
-    book = History.objects.create(user=user, book_id=book_id)
-    book.save()
-    current_url = req.get_full_path()
-    return redirect(current_url)
+    exit = History.objects.get(user=user, book_id=book_id)
+
+    if exit:
+        exit.read_count += 1
+        exit.save()
+
+    else:
+        history = History.objects.create(user=user, book_id=book_id)
+        history.save()
+    book = search_book(book_id)
+    return render(req, "bookDetails.html", {"book": book})

@@ -29,7 +29,7 @@ class Bookmark(TimeStampMixin):
 class History(TimeStampMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     book_id = models.CharField(max_length=50)
-    read_count = models.IntegerField()
+    read_count = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f"{self.user.username} - history"

@@ -16,4 +16,4 @@ def search_book(query):
     )
     data = res.json()
 
-    return data["items"]
+    return data["volumeInfo"]
