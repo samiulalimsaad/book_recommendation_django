@@ -85,11 +85,69 @@
         <div class="mt-4">
             <h2 class="text-lg font-semibold">Cover Images</h2>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <img
-                    src="{{ book.imageLinks.large }}"
-                    alt="Thumbnail"
-                    class="rounded-md shadow-md"
-                />
+                <div>
+                    <img
+                        src="{{ book.imageLinks.large }}"
+                        alt="Thumbnail"
+                        class="rounded-md shadow-md"
+                    />
+                </div>
+                <!-- Open the modal using ID.showModal() method -->
+                <div>
+                    <button class="btn" onclick="rating_modal.showModal()">
+                        Rating
+                    </button>
+                    <dialog id="my_modal_1" class="modal">
+                        <div class="space-y-4 modal-box">
+                            <h3 class="text-lg font-bold">{{book.title}}</h3>
+                            <div
+                                class="flex-row items-center justify-center space-y-4"
+                            >
+                                <div class="rating">
+                                    <input
+                                        type="radio"
+                                        name="rating-1"
+                                        class="mask mask-star"
+                                    />
+                                    <input
+                                        type="radio"
+                                        name="rating-1"
+                                        class="mask mask-star"
+                                        checked
+                                    />
+                                    <input
+                                        type="radio"
+                                        name="rating-1"
+                                        class="mask mask-star"
+                                    />
+                                    <input
+                                        type="radio"
+                                        name="rating-1"
+                                        class="mask mask-star"
+                                    />
+                                    <input
+                                        type="radio"
+                                        name="rating-1"
+                                        class="mask mask-star"
+                                    />
+                                </div>
+                                <div>
+                                    <textarea
+                                        class="w-full resize-none textarea textarea-primary"
+                                        placeholder="Bio"
+                                        rows="6"
+                                    ></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <!-- if there is a button in form, it will close the modal -->
+                                    <button class="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+                </div>
             </div>
         </div>
     </div>
