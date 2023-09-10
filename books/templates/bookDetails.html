@@ -1,0 +1,97 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container p-4 mx-auto">
+    <div
+        class="grid grid-cols-1 gap-4 p-6 bg-white rounded-lg shadow-lg md:grid-cols-3"
+    >
+        <div class="col-span-2">
+            <h1 class="text-2xl font-semibold">{{ book.title }}</h1>
+            <p class="text-gray-600">{{ book.subtitle }}</p>
+            <div class="text-sm text-gray-500">
+                by {% for author in authors %}
+                <p>{{ author }} {% if not forloop.last%}, {% endif %}</p>
+
+                {% endfor %}
+            </div>
+
+            <div class="mt-4">
+                <p class="text-gray-700">Publisher: {{ book.publisher }}</p>
+                <p class="text-gray-700">
+                    Published Date: {{ book.publishedDate }}
+                </p>
+                <p class="text-gray-700">Page Count: {{ book.pageCount }}</p>
+            </div>
+
+            <div class="mt-4">
+                <h2 class="text-lg font-semibold">Description</h2>
+                <p class="text-gray-700" v>{{book.description|safe}}</p>
+            </div>
+
+            <div class="mt-4">
+                <h2 class="text-lg font-semibold">Categories</h2>
+                <ul class="text-gray-700 list-disc list-inside">
+                    {% for category in book.categories %}
+                    <li>{{ category}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <h2 class="text-lg font-semibold">Average Rating</h2>
+                <p class="text-gray-700">
+                    {{ book.averageRating }}/5 ({{ book.ratingsCount }} ratings)
+                </p>
+            </div>
+
+            <div class="mt-4">
+                <h2 class="text-lg font-semibold">Dimensions</h2>
+                <p class="text-gray-700">
+                    Height: {{ book.dimensions.height }}
+                </p>
+                <p class="text-gray-700">Width: {{ book.dimensions.width }}</p>
+                <p class="text-gray-700">
+                    Thickness: {{ book.dimensions.thickness }}
+                </p>
+            </div>
+
+            <div class="mt-4">
+                <h2 class="text-lg font-semibold">Links</h2>
+                <p class="text-gray-700">
+                    <a
+                        href="{{ book.previewLink }}"
+                        target="_blank"
+                        class="text-blue-500"
+                        >Preview Link</a
+                    >
+                </p>
+                <p class="text-gray-700">
+                    <a
+                        href="{{ book.infoLink }}"
+                        target="_blank"
+                        class="text-blue-500"
+                        >Info Link</a
+                    >
+                </p>
+                <p class="text-gray-700">
+                    <a
+                        href="{{ book.canonicalVolumeLink }}"
+                        target="_blank"
+                        class="text-blue-500"
+                        >Canonical Volume Link</a
+                    >
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h2 class="text-lg font-semibold">Cover Images</h2>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <img
+                    src="{{ book.imageLinks.large }}"
+                    alt="Thumbnail"
+                    class="rounded-md shadow-md"
+                />
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
