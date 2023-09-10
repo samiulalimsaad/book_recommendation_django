@@ -1,49 +1,50 @@
-<div class="sm:w-3/4 mx-auto">
-    <div class="navbar bg-base-100">
-        <div class="navbar-start">
-            <div class="dropdown">
-                <label tabindex="0" class="btn btn-ghost sm:hidden">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+<div class="bg-base-100">
+    <div class="mx-auto sm:w-3/4">
+        <div class="navbar">
+            <div class="navbar-start">
+                <div class="dropdown">
+                    <label tabindex="0" class="btn btn-ghost sm:hidden">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-5 h-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h8m-8 6h16"
+                            />
+                        </svg>
+                    </label>
+                    <ul
+                        tabindex="0"
+                        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-4"
                     >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h8m-8 6h16"
-                        />
-                    </svg>
-                </label>
-                <ul
-                    tabindex="0"
-                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-4"
+                        {% if is_authenticated %}
+                        <a href="logout" class="btn btn-info" href="/login"
+                            >Logout</a
+                        >
+                        {% else %}
+                        <a class="btn btn-info" href="/login">Login</a>
+                        <a class="btn btn-success" href="/signup">Signup</a>
+                        {% endif %}
+                    </ul>
+                </div>
+                <a href="/" class="text-xl normal-case btn btn-ghost"
+                    >Book Recommendation</a
                 >
-                    {% if is_authenticated %}
-                    <a href="logout" class="btn btn-info" href="/login"
-                        >Logout</a
-                    >
-                    {% else %}
-                    <a class="btn btn-info" href="/login">Login</a>
-                    <a class="btn btn-success" href="/signup">Signup</a>
-                    {% endif %}
-                </ul>
             </div>
-            <a href="/" class="btn btn-ghost normal-case text-xl"
-                >Book Recommendation</a
-            >
-        </div>
-        <div class="navbar-end gap-2 hidden lg:flex">
-            {% if is_authenticated %}
-            <a href="logout" class="btn btn-info" href="/login">Logout</a>
-            {% else %}
-            <a class="btn btn-info" href="/login">Login</a>
-            <a class="btn btn-success" href="/signup">Signup</a>
-            {% endif %}
+            <div class="hidden gap-2 navbar-end lg:flex">
+                {% if is_authenticated %}
+                <a href="logout" class="btn btn-info" href="/login">Logout</a>
+                {% else %}
+                <a class="btn btn-info" href="/login">Login</a>
+                <a class="btn btn-success" href="/signup">Signup</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
-{% block content %}{% endblock content %}

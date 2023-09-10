@@ -18,6 +18,9 @@
     </head>
 
     <body class="bg-slate-50">
-        {% extends 'navbar.html' %} {% block content %}{% endblock content %}
+        {% include 'navbar.html' %}
+        <div class="mx-auto sm:w-3/4">
+            {% block content %}{% endblock content %}
+        </div>
     </body>
 </html>
