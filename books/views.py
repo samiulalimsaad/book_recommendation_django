@@ -6,38 +6,34 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
-from books.helpers import search_book, search_books
+from books.helpers import book_recommendation, search_book, search_books
 from books.models import Bookmark, History, Review
 
 
 @login_required(login_url="login/")
 def index(req) -> HttpResponse:
-    if req.user.is_authenticated:
-        if req.method == "POST":
-            query = req.POST["query"]
-            books = search_books(query)
-            return render(
-                req,
-                "index.html",
-                {
-                    "is_authenticated": req.user.is_authenticated,
-                    "books": books,
-                    "query": query,
-                },
-            )
-        else:
-            user = req.user
-            return render(
-                req,
-                "index.html",
-                {
-                    "is_authenticated": req.user.is_authenticated,
-                },
-            )
-
+    recommended_books = book_recommendation()
+    if req.method == "POST":
+        query = req.POST["query"]
+        books = search_books(query)
+        return render(
+            req,
+            "index.html",
+            {
+                "is_authenticated": req.user.is_authenticated,
+                "books": books,
+                "query": query,
+                "recommended_books": recommended_books,
+            },
+        )
     else:
         return render(
-            req, "login.html", {"is_authenticated": req.user.is_authenticated}
+            req,
+            "index.html",
+            {
+                "is_authenticated": req.user.is_authenticated,
+                "recommended_books": recommended_books,
+            },
         )
 
 
