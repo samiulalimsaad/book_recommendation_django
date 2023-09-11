@@ -6,9 +6,21 @@ import requests
 from books.models import Bookmark, History, Review
 
 
-def search_books(query):
+def search_books(
+    query,
+    filter="q",
+):
+    q = query
+
+    if filter == "title":
+        q = f"intitle:{query}"
+    if filter == "author":
+        q = f"inauthor:{query}"
+    if filter == "genre":
+        q = f"subject:{query}"
+
     res = requests.get(
-        f"https://www.googleapis.com/books/v1/volumes?q={query}&key=AIzaSyDz5HKDZj3UX-oKP1tRMfczCXzZFRdaDM8"
+        f"https://www.googleapis.com/books/v1/volumes?q={q}&key=AIzaSyDz5HKDZj3UX-oKP1tRMfczCXzZFRdaDM8"
     )
     data = res.json()
 
@@ -21,15 +33,11 @@ def search_book(query):
     )
     data = res.json()
     data["volumeInfo"]["id"] = data["id"]
-    print(data["volumeInfo"]["id"])
 
     return data["volumeInfo"]
 
 
 def book_recommendation():
-    # Sample list of books to recommend from
-    books_to_recommend = search_books("python")
-
     # Sample user behavior data (replace this with your actual data)
     bookmarks = Bookmark.objects.all()
     history = History.objects.all()
@@ -40,23 +48,41 @@ def book_recommendation():
 
     # Filter out books the user has already interacted with
     user_books = set(item.book_id for item in user_behavior)
-    print(user_books)
 
     temp_books = []
 
     # Display the recommended books
     for b in user_books:
-        print(f"Recommendation: {b}")
         temp_books.append(search_book(b))
 
-    random_sample = search_books("python")
+    random_sample_mystery = search_books("Mystery", filter="genre")
+    random_sample_fantasy = search_books("Fantasy", filter="genre")
+    random_sample_romance = search_books("Romance", filter="genre")
+    random_sample_thriller = search_books("Thriller", filter="genre")
+    random_sample_horror = search_books("Horror", filter="genre")
+    random_sample_science = search_books("Science", filter="genre")
+    random_sample_cookbook = search_books("Cookbook", filter="genre")
+    random_sample_poetry = search_books("Poetry", filter="genre")
 
-    # Display the recommended books
-    for b in random_sample:
-        print(f"Recommendation: {b}")
+    # Combine all the lists into one
+    all_books = (
+        random_sample_mystery
+        + random_sample_fantasy
+        + random_sample_romance
+        + random_sample_thriller
+        + random_sample_horror
+        + random_sample_science
+        + random_sample_cookbook
+        + random_sample_poetry
+    )
+
+    # Remove duplicates by converting the tuple to a set and then back to a list
+    sample = all_books
+
+    final = random.choices(sample, k=10)
+    books = []
+    for b in final:
         b["volumeInfo"]["id"] = b["id"]
-        temp_books.append(b["volumeInfo"])
-
-    books = random.choices(temp_books, k=10)
+        books.append(b["volumeInfo"])
 
     return books
