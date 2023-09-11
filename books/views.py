@@ -14,8 +14,9 @@ from books.models import Bookmark, History, Review
 def index(req) -> HttpResponse:
     recommended_books = book_recommendation()
     if req.method == "POST":
+        filter = req.POST["filter"]
         query = req.POST["query"]
-        books = search_books(query)
+        books = search_books(query, filter)
         return render(
             req,
             "index.html",
@@ -23,6 +24,7 @@ def index(req) -> HttpResponse:
                 "is_authenticated": req.user.is_authenticated,
                 "books": books,
                 "query": query,
+                "filter": filter,
                 "recommended_books": recommended_books,
             },
         )
