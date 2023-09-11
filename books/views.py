@@ -85,6 +85,33 @@ def bookmark(req: HttpRequest, book_id) -> HttpResponse:
 
 
 @login_required(login_url="login/")
+def remove_bookmark(req: HttpRequest, book_id) -> HttpResponse:
+    user = req.user
+    book = Bookmark.objects.filter(user=user, book_id=book_id)
+    book.delete()
+    return redirect("bookmark_profile")
+
+
+@login_required(login_url="login/")
+def bookmarks_profile(req: HttpRequest) -> HttpResponse:
+    user = req.user
+    book = Bookmark.objects.filter(user=user)
+    books = []
+    for b in book:
+        book = search_book(b.book_id)
+        books.append(book)
+    return render(
+        req,
+        "bookmarks.html",
+        {
+            "success": True,
+            "books": books,
+            "is_authenticated": req.user.is_authenticated,
+        },
+    )
+
+
+@login_required(login_url="login/")
 def details(req, book_id) -> HttpResponse:
     user = req.user
     try:
