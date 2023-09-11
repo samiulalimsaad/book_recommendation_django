@@ -88,8 +88,9 @@
                 <div>
                     <img
                         src="{{ book.imageLinks.large }}"
-                        alt="Thumbnail"
+                        alt="{{book.title}}"
                         class="rounded-md shadow-md"
+                        onerror="this.src='{{ book.imageLinks.thumbnail }}'; this.onerror=null;"
                     />
                 </div>
                 <!-- Open the modal using ID.showModal() method -->
@@ -101,6 +102,11 @@
                         >
                             Rating
                         </button>
+                        {% if review %}
+                        <p class="text-success">
+                            You Have already added a review
+                        </p>
+                        {% endif %}
                         <dialog id="rating_modal" class="modal">
                             <div class="space-y-4 modal-box">
                                 <h3 class="text-lg font-bold">
@@ -152,17 +158,24 @@
                                                 placeholder="Add a review"
                                                 rows="6"
                                                 name="comment"
+                                                value="{{review.comment}}"
                                             ></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-action">
-                                        <!-- if there is a button in form, it will close the modal -->
-                                        <button class="btn">Save</button>
+                                        <form method="dialog">
+                                            <button class="btn btn-warning">
+                                                Close
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-success">
+                                            Save
+                                        </button>
                                     </div>
                                 </form>
 
                                 <script>
-                                    let selectedRating = 2; // Initially, the second star is selected
+                                    let selectedRating = `{{review.review_count}}`;
 
                                     function updateRating(rating) {
                                         selectedRating = rating;
