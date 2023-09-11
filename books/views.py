@@ -133,6 +133,26 @@ def review_profile(req: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="login/")
+def reading_history_profile(req: HttpRequest) -> HttpResponse:
+    user = req.user
+    book = History.objects.filter(user=user)
+    books = []
+    for b in book:
+        book = search_book(b.book_id)
+        books.append(book)
+    return render(
+        req,
+        "bookmarks.html",
+        {
+            "success": True,
+            "title": "Reading History Profile",
+            "books": books,
+            "is_authenticated": req.user.is_authenticated,
+        },
+    )
+
+
+@login_required(login_url="login/")
 def details(req, book_id) -> HttpResponse:
     user = req.user
     try:
