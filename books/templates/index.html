@@ -45,5 +45,14 @@
             </div>
         </div>
     </div>
+    <div class="divider">Recommended Books</div>
+
+    <div class="container mx-auto">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {% for book in recommended_books %}
+            <div>{% include 'singleBookmark.html' %}</div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock content%}
