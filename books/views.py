@@ -7,7 +7,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
 from books.helpers import search_book, search_books
-from books.models import Bookmark, History
+from books.models import Bookmark, History, Review
 
 # @login_required(login_url="login/")
 # def index(req) -> HttpResponse:
@@ -111,14 +111,44 @@ def bookmark(req: HttpRequest, book_id) -> HttpResponse:
 @login_required(login_url="login/")
 def details(req, book_id) -> HttpResponse:
     user = req.user
-    exit = History.objects.get(user=user, book_id=book_id)
-
-    if exit:
-        exit.read_count += 1
-        exit.save()
+    try:
+        exit = History.objects.get(user=user, book_id=book_id)
+        if exit:
+            exit.read_count += 1
+            exit.save()
+    except:
+        pass
 
     else:
         history = History.objects.create(user=user, book_id=book_id)
+        history.save()
+    book = search_book(book_id)
+    return render(req, "bookDetails.html", {"book": book})
+
+
+@login_required(login_url="login/")
+def review(req, book_id) -> HttpResponse:
+    user = req.user
+    try:
+        rating_count = 0
+
+        for key in req.POST:
+            if key.startswith("rating_") and req.POST[key] == "on":
+                rating_count += 1
+
+        exit = Review.objects.get(user=user, book_id=book_id)
+
+        exit.review_count = rating_count
+        exit.comment = req.POST["comment"]
+        exit.save()
+
+    except Review.DoesNotExist:
+        history = Review.objects.create(
+            user=user,
+            book_id=book_id,
+            review_count=rating_count,
+            comment=req.POST["comment"],
+        )
         history.save()
     book = search_book(book_id)
     return render(req, "bookDetails.html", {"book": book})
