@@ -9,33 +9,8 @@ from django.shortcuts import redirect, render
 from books.helpers import search_book, search_books
 from books.models import Bookmark, History, Review
 
-# @login_required(login_url="login/")
-# def index(req) -> HttpResponse:
-#     if req.user.is_authenticated:
-#         if req.method == "POST":
-#             query = req.POST["query"]
-#             books = search_books(query)
 
-#             return render(
-#                 req,
-#                 "index.html",
-#                 {"is_authenticated": req.user.is_authenticated, "books": books},
-#             )
-#         else:
-#             user = req.user
-#             return render(
-#                 req,
-#                 "index.html",
-#                 {
-#                     "is_authenticated": req.user.is_authenticated,
-#                 },
-#             )
-
-#     else:
-#         return render(req, "login.html", {"is_authenticated": req.user.is_authenticated})
-
-
-# @login_required(login_url="login/")
+@login_required(login_url="login/")
 def index(req) -> HttpResponse:
     if req.user.is_authenticated:
         if req.method == "POST":
@@ -66,35 +41,36 @@ def index(req) -> HttpResponse:
         )
 
 
-def register(request) -> HttpResponse:
-    if request.method == "POST":
-        name = request.POST["name"]
-        email = request.POST["email"]
-        password = request.POST["password"]
+def register(req) -> HttpResponse:
+    if req.method == "POST":
+        name = req.POST["name"]
+        email = req.POST["email"]
+        password = req.POST["password"]
         user = User.objects.create_user(name, email, password)
         # user.has_perm('foo.add_bar')
         user.save()
-        login_user(request, user)
+        login_user(req, user)
         return redirect("index")
 
-    return render(request, "signup.html")
+    return render(req, "signup.html", {"is_authenticated": req.user.is_authenticated})
 
 
-def login(request) -> HttpResponse:
-    if request.method == "POST":
+def login(req) -> HttpResponse:
+    if req.method == "POST":
         user = authenticate(
-            request, username=request.POST["name"], password=request.POST["password"]
+            req, username=req.POST["name"], password=req.POST["password"]
         )
         if user is not None:
-            login_user(request, user)
+            login_user(req, user)
             return redirect("index")
         else:
             # No backend authenticated the credentials
             ...
 
-    return render(request, "login.html")
+    return render(req, "login.html", {"is_authenticated": req.user.is_authenticated})
 
 
+@login_required(login_url="login/")
 def logout(request) -> HttpResponse:
     logout_user(request)
     return redirect("login")
@@ -123,7 +99,11 @@ def details(req, book_id) -> HttpResponse:
         history = History.objects.create(user=user, book_id=book_id)
         history.save()
     book = search_book(book_id)
-    return render(req, "bookDetails.html", {"book": book})
+    return render(
+        req,
+        "bookDetails.html",
+        {"book": book, "is_authenticated": req.user.is_authenticated},
+    )
 
 
 @login_required(login_url="login/")
@@ -151,4 +131,8 @@ def review(req, book_id) -> HttpResponse:
         )
         history.save()
     book = search_book(book_id)
-    return render(req, "bookDetails.html", {"book": book})
+    return render(
+        req,
+        "bookDetails.html",
+        {"book": book, "is_authenticated": req.user.is_authenticated},
+    )
