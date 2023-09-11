@@ -15,5 +15,7 @@ def search_book(query):
         f"https://www.googleapis.com/books/v1/volumes/{query}?key=AIzaSyDz5HKDZj3UX-oKP1tRMfczCXzZFRdaDM8"
     )
     data = res.json()
+    data["volumeInfo"]["id"] = data["id"]
+    print(data["volumeInfo"]["id"])
 
     return data["volumeInfo"]

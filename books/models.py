@@ -38,7 +38,7 @@ class History(TimeStampMixin):
 class Review(TimeStampMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     book_id = models.CharField(max_length=50)
-    review_count = models.IntegerField()
+    review_count = models.IntegerField(default=0)
     comment = models.CharField(max_length=50)
 
     def __str__(self) -> str:
