@@ -105,6 +105,27 @@ def bookmarks_profile(req: HttpRequest) -> HttpResponse:
         "bookmarks.html",
         {
             "success": True,
+            "title": "Bookmarks",
+            "books": books,
+            "is_authenticated": req.user.is_authenticated,
+        },
+    )
+
+
+@login_required(login_url="login/")
+def review_profile(req: HttpRequest) -> HttpResponse:
+    user = req.user
+    book = Review.objects.filter(user=user)
+    books = []
+    for b in book:
+        book = search_book(b.book_id)
+        books.append(book)
+    return render(
+        req,
+        "bookmarks.html",
+        {
+            "success": True,
+            "title": "Reviews",
             "books": books,
             "is_authenticated": req.user.is_authenticated,
         },
