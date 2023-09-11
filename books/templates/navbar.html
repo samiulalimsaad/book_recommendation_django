@@ -3,7 +3,7 @@
         <div class="navbar">
             <div class="navbar-start">
                 <div class="dropdown">
-                    <label tabindex="0" class="btn btn-ghost sm:hidden">
+                    <label tabindex="0" class="hidden btn btn-ghost">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             class="w-5 h-5"
@@ -24,9 +24,7 @@
                         class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-4"
                     >
                         {% if is_authenticated %}
-                        <a href="logout" class="btn btn-info" href="/login"
-                            >Logout</a
-                        >
+                        <a>{% include 'profileDropdown.html' %}</a>
                         {% else %}
                         <a class="btn btn-info" href="/login">Login</a>
                         <a class="btn btn-success" href="/signup">Signup</a>
@@ -40,6 +38,13 @@
             <div class="hidden gap-2 navbar-end lg:flex">
                 {% if is_authenticated %}
                 <a href="logout" class="btn btn-info" href="/login">Logout</a>
+                {% include 'profileDropdown.html' %} {% else %}
+                <a class="btn btn-info" href="/login">Login</a>
+                <a class="btn btn-success" href="/signup">Signup</a>
+                {% endif %}
+            </div>
+            <div class="flex gap-2 navbar-end sm:hidden">
+                {% if is_authenticated %} {% include 'profileDropdown.html' %}
                 {% else %}
                 <a class="btn btn-info" href="/login">Login</a>
                 <a class="btn btn-success" href="/signup">Signup</a>
