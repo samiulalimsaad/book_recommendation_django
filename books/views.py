@@ -22,6 +22,7 @@ def index(req) -> HttpResponse:
             "index.html",
             {
                 "is_authenticated": req.user.is_authenticated,
+                "name": req.user.username[:2],
                 "books": books,
                 "query": query,
                 "filter": filter,
@@ -34,6 +35,7 @@ def index(req) -> HttpResponse:
             "index.html",
             {
                 "is_authenticated": req.user.is_authenticated,
+                "name": req.user.username[:2],
                 "recommended_books": recommended_books,
             },
         )
@@ -106,6 +108,7 @@ def bookmarks_profile(req: HttpRequest) -> HttpResponse:
             "title": "Bookmarks",
             "books": books,
             "is_authenticated": req.user.is_authenticated,
+            "name": req.user.username[:2],
         },
     )
 
@@ -126,6 +129,7 @@ def review_profile(req: HttpRequest) -> HttpResponse:
             "title": "Reviews",
             "books": books,
             "is_authenticated": req.user.is_authenticated,
+            "name": req.user.username[:2],
         },
     )
 
@@ -146,6 +150,7 @@ def reading_history_profile(req: HttpRequest) -> HttpResponse:
             "title": "Reading History Profile",
             "books": books,
             "is_authenticated": req.user.is_authenticated,
+            "name": req.user.username[:2],
         },
     )
 
@@ -153,22 +158,31 @@ def reading_history_profile(req: HttpRequest) -> HttpResponse:
 @login_required(login_url="login/")
 def details(req, book_id) -> HttpResponse:
     user = req.user
+    review = None
     try:
         exit = History.objects.get(user=user, book_id=book_id)
-        if exit:
-            exit.read_count += 1
-            exit.save()
+        exit.read_count += 1
+        exit.save()
     except:
-        pass
-
-    else:
         history = History.objects.create(user=user, book_id=book_id)
         history.save()
+
+    try:
+        review = Review.objects.get(user=user, book_id=book_id)
+    except:
+        print("error")
+    print(review)
+
     book = search_book(book_id)
     return render(
         req,
         "bookDetails.html",
-        {"book": book, "is_authenticated": req.user.is_authenticated},
+        {
+            "book": book,
+            "is_authenticated": req.user.is_authenticated,
+            "name": req.user.username[:2],
+            "review": review,
+        },
     )
 
 
@@ -197,8 +211,4 @@ def review(req, book_id) -> HttpResponse:
         )
         history.save()
     book = search_book(book_id)
-    return render(
-        req,
-        "bookDetails.html",
-        {"book": book, "is_authenticated": req.user.is_authenticated},
-    )
+    return redirect(f"/details/{book_id}")
